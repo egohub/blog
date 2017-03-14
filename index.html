@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html >
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+
+  <div ng-app="app">
+  <div ng-controller="goalCtrl" class="container">
+    <h2>Angular Promises </h2>
+    <div ng-model="goals">{{goal.data.url}}</div>
+    <h4>Video ID</h4>
+        <pre><code class="javascript">{{videoId | json}}</code></pre>
+
+    
+    <div ng-repeat="v in goals">
+      <h5>{{v.data.title}}</h5>
+        <p>{{v.data.media_embed.content}}</p>
+    </div>
+    <hr>
+    <pre><code class="javascript">{{goals | json}}</code></pre>
+    <hr>
+    <div ng-repeat="v in goals" class="streamable-embed-container" style="width: 100%; height: 0px; position: relative; padding-bottom: 56.338%;">
+      <h4>{{v.Title}}</h4>
+      <iframe class="streamable-embed" src="" frameborder="0" scrolling="no" style="width: 100%; height: 100%; position: absolute;" allowfullscreen webkitallowfullscreen mozallowfullscreen>
+        </iframe>
+    </div>
+  </div>
+</div>
+</div>
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js'></script>
+
+    <script>
+    angular.module('app', ['app.controllers',  'app.services'])
+
+angular.module('app.controllers', [])
+.controller('goalCtrl', function($scope, $sce, goalService) {
+
+  $scope.isGoalVideo = function (item) {
+    if((item.data.title.indexOf(" goal ") > 0 || item.data.title.indexOf("score") > 0) &&
+          item.data.link_flair_text === "Media") {
+      return true;
+    }
+    return false;
+  };
+
+  $scope.trustUrl = function (url) {
+    return $sce.trustAsResourceUrl(url);
+  };
+
+  $scope.trustUrlAlt = function (url) {
+    var urlSplit = url.split('/');
+    var videoId = urlSplit[urlSplit.length - 1];
+    return $sce.trustAsResourceUrl('http://cdn.streamable.com/video/mp4-mobile/' + videoId + '.mp4');
+  };
+
+  
+
+  $scope.getGoals = function () {
+    goalService.getGoals().then(function (response) {
+      $scope.goals = response.data.data.children;
+    }, function (error) {
+
+    });
+  };
+
+  $scope.getGoals();
+});
+
+angular.module('app.services', [])
+.factory('goalService', function($http) {
+  var getGoals = function() {
+    var req = {
+      method: 'GET',
+      // header :'Access-Control-Allow-Origin', '*',
+//   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+      url : 'https://www.reddit.com/r/soccer/search.json?q=flair%3Amedia+site%3Astreamable.com+goal&restrict_sr=on&sort=new&t=day',
+      // url: 'https://www.reddit.com/r/soccer/new.json',
+    };
+    return $http(req);
+  };
+
+  var api = {
+    getGoals: getGoals,
+  };
+
+  return api;
+  console.log(api);
+
+});
+  </script>
+
+  
+  
+
+</body>
+</html>
+ 
