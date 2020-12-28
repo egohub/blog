@@ -2,11 +2,11 @@ full_rebuild: true
 name: Gridster
 description: the material experience for jekyll
 destination: jekyllbuild
-url: http://egohub.github.io
-baseurl: http://egohub.github.io/blog #place folder name if site is served in subfolder
+url: https://egohub.github.io/
+baseurl: /blog /#place folder name if site is served in subfolder
 permalink: /:title/
 paginate: 8
-paginate_path: /page/:num/
+paginate_path: /blog/page/:num/
 infinite_scroll: false #change to false if you want to use pagination
 gems: [jekyll-paginate]
 tag_dir: /tag
